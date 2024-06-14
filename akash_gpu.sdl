@@ -1,0 +1,40 @@
+---
+version: "2.0"
+services:
+  service-1:
+    image: omarsaadoun/brainstems-jedai:gpu2
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+      - port: 8000
+        as: 8000
+        to:
+          - global: true
+profiles:
+  compute:
+    service-1:
+      resources:
+        cpu:
+          units: 4
+        memory:
+          size: 64Gi
+        storage:
+          - size: 150Gi
+        gpu:
+          units: 1
+          attributes:
+            vendor:
+              nvidia: 
+  placement:
+    dcloud:
+      pricing:
+        service-1:
+          denom: uakt
+          amount: 1000
+deployment:
+  service-1:
+    dcloud:
+      profile: service-1
+      count: 1
