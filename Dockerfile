@@ -4,17 +4,26 @@ FROM --platform=linux/amd64 nvidia/cuda:12.4.1-cudnn-devel-ubuntu20.04
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY ./server.py /app/server.py
-COPY ./dolphin-2.6-mistral-7b.Q8_0.gguf /app/dolphin-2.6-mistral-7b.Q8_0.gguf
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    git \
+    wget
 
-# Install the needed packages
-RUN apt-get update && apt-get install -y python3-pip
-RUN pip3 install llama-cpp-python
-RUN pip3 install Flask
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Copy the requirements file and install Python packages
+COPY requirements.txt /app/requirements.txt
+RUN python3 -m pip install --upgrade pip && \
+    pip3 install --default-timeout=100 -r /app/requirements.txt
+
+# Clean up APT when done
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Expose port 8000 outside of the container
 EXPOSE 8000
 
-# Run server.py when the container launches
-CMD ["python3", "server.py"]
+# Run the entrypoint script when the container starts
+ENTRYPOINT ["/app/entrypoint.sh"]

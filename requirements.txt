@@ -1,2 +1,6 @@
 llama-cpp-python
 Flask
+transformers
+optimum[onnxruntime-gpu]
+datasets<=2.20.0
+fsspec[http]>=2023.1.0,<2024.6.0

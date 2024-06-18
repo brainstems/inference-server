@@ -2,7 +2,7 @@
 version: "2.0"
 services:
   service-1:
-    image: omarsaadoun/brainstems-jedai:gpu2
+    image: omarsaadoun/brainstems-jedai-lite:gpu6
     expose:
       - port: 80
         as: 80
@@ -12,6 +12,9 @@ services:
         as: 8000
         to:
           - global: true
+       env:
+      - >-
+        MODEL_URL=https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF/resolve/main/dolphin-2.0-mistral-7b.Q5_K_S.gguf
 profiles:
   compute:
     service-1:

@@ -1,16 +1,20 @@
 from flask import Flask, request, jsonify
-from llama_cpp import Llama
+from transformers import AutoTokenizer
+from optimum.onnxruntime import ORTModelForSequenceClassification
+import torch
 
 # Create a Flask object
 app = Flask("Dolphin-2.6.mistral-7b server")
 model = None
+tokenizer = None
 
 # Template for the prompt
-template = "<|im_start|>system\n{system_context}<|im_end|>\n<|im_start|>user\n{user_prompt}<|im_end|>\n<|im_start|>assistant\n{assistant_context}<|im_end|>"
+template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
 
 @app.route('/dolphin', methods=['POST'])
 def generate_response():
     global model
+    global tokenizer
     
     try:
         data = request.get_json()
@@ -25,19 +29,17 @@ def generate_response():
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
             
-            # Create the model if it was not previously created
+            # Load the model and tokenizer if not previously loaded
             if model is None:
-                # Put the location of the GGUF model here
-                model_path = "./dolphin-2.6-mistral-7b.Q8_0.gguf"
-                
-                # Create the model
-                model = Llama(model_path=model_path)
+                model_path = "./dolphin-2.0-mistral-7b.Q5_K_S.gguf"
+                tokenizer = AutoTokenizer.from_pretrained(model_path)
+                model = ORTModelForSequenceClassification.from_pretrained(model_path, from_transformers=True)
+                model.to("cuda")
              
-            # Run the model
-            output = model(prompt, max_tokens=max_tokens, echo=False)
-            
-            # Extract the text from the model output for better readability in the JSON response
-            generated_text = output['choices'][0]['text']
+            # Generate response using the model
+            inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+            outputs = model.generate(**inputs, max_new_tokens=max_tokens)
+            generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
             
             return jsonify({"response": generated_text})
 
