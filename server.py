@@ -10,7 +10,7 @@ model = None
 tokenizer = None
 
 # Get the model path from environment variable or use default
-model_path = os.getenv("MODEL_PATH", "TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF")
+model_path = "TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF" #change for env variable
 
 # Template for the prompt
 template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
