@@ -12,7 +12,7 @@ services:
         as: 8000
         to:
           - global: true
-       env:
+    env:
       - >-
         MODEL_URL=https://huggingface.co/TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF/resolve/main/dolphin-2.0-mistral-7b.Q5_K_S.gguf
 profiles:
