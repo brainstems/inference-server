@@ -18,7 +18,7 @@ fi
 # Download the model file
 if [ ! -f "$MODEL_PATH" ]; then
     echo "Downloading the model file..."
-    python3 /app/download_model.py "$MODEL_URL" "$MODEL_PATH"
+    python3 /app/repo/download_model.py "$MODEL_URL" "$MODEL_PATH"
 fi
 
 # Export the model path environment variable
