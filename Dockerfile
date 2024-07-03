@@ -1,5 +1,5 @@
-# Use the NVIDIA CUDA base image for ARM64 architecture (for M2 Mac)
-FROM --platform=linux/amd64 nvidia/cuda:12.4.1-cudnn-devel-ubuntu20.04
+# The NVIDIA CUDA base image. CUDA 12.5.0 images fail on Akash.
+FROM --platform=linux/amd64 nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 
 # Set the working directory in the container
 WORKDIR /app
@@ -14,16 +14,17 @@ RUN apt-get update && apt-get install -y \
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Copy the requirements file and install Python packages
-COPY requirements.txt /app/requirements.txt
+# Copy files.
+COPY requirements.txt entrypoint.sh server.py \
+    app.py akash_gpu.sdl download_model.py /app/repo/
+
+# Install project dependencies.
 RUN python3 -m pip install --upgrade pip && \
-    pip3 install --default-timeout=100 -r /app/requirements.txt
+    pip3 install --default-timeout=100 -r /app/repo/requirements.txt > /app/pip-install-output
 
 # Clean up APT when done
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Expose port 8000 outside of the container
 EXPOSE 8000
 
-# Run the entrypoint script when the container starts
 ENTRYPOINT ["/app/entrypoint.sh"]

@@ -2,7 +2,7 @@
 version: "2.0"
 services:
   service-1:
-    image: omarsaadoun/brainstems-jedai-lite:gpu6
+    image: docker push ernestbs/jedai-akash-poc:v0.0.2
     expose:
       - port: 80
         as: 80
