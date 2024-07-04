@@ -20,8 +20,7 @@ RUN chmod +x /app/entrypoint.sh
 COPY requirements.txt /app/repo/
 
 # Install project dependencies.
-RUN python3 -m pip install --upgrade pip && \
-    pip3 install --default-timeout=100 -r /app/repo/requirements.txt > /app/pip-install-output
+RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt > /app/pip-install-output
 
 # Clean up APT when done
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

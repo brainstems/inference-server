@@ -11,11 +11,11 @@ MODEL_PATH=${MODEL_PATH:-"llama-2-7b-chat.Q5_K_S.gguf"}
 echo "Cloning repository branch $REPO_BRANCH"
 git clone -b "$REPO_BRANCH" "$REPO_URL" "$REPO_DIR"
 
-# Download the model file
-# if [ ! -f "$MODEL_PATH" ]; then
-#     echo "Downloading the model file..."
-#     python3 "$REPO_DIR"/download_model.py $MODEL_URL $MODEL_PATH
-# fi
+Download the model file
+if [ ! -f "$MODEL_PATH" ]; then
+    echo "Downloading the model file..."
+    python3 "$REPO_DIR"/download_model.py "$MODEL_URL" "$MODEL_PATH"
+fi
 
 # Export the model path environment variable
 export MODEL_PATH="$MODEL_PATH"
