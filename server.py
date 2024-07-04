@@ -30,6 +30,7 @@ def generate_response():
             user_prompt = data['user_prompt']
             max_tokens = int(data['max_tokens'])
             assistant_context = data['assistant_context']
+            device = ""
 
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
@@ -39,7 +40,7 @@ def generate_response():
                 # Ensure that the model uses GPU if available 
                 device = "cuda" if torch.cuda.is_available() else "cpu"
                 if device != "cuda":
-                    raise Exception("'device' could not be set to 'cuda'. GPU is not being used.")
+                    raise Exception(f"'device' could not be set to 'cuda'. GPU is not being used. device: {device}")
                 print(f"'device' set to '{device}'")
                 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
                 model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
