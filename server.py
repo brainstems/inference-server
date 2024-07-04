@@ -43,14 +43,21 @@ def generate_response():
                     raise Exception(f"'device' could not be set to 'cuda'. GPU is not being used. device: {device}")
                 print(f"'device' set to '{device}'")
                 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
+                print(f"Setting up AutoModelForCausalLM") # debug
                 model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
+                print(f"Setting up Tokenizer") # debug
                 tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+                print(f"Setting up ORTModelForSeq2SeqLM") # debug
                 model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
+                print(f"Model to CUDA") # debug
                 model.to("cuda")
                 
             # Generate response using the model
+            print(f"Tokenizing") # debug
             inputs = tokenizer(prompt, return_tensors="pt").to(device)
+            print(f"Generating output") # debug
             outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
+            print(f"Tex decoding") # debug
             generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
             
             return jsonify({"response": model(prompt)})
