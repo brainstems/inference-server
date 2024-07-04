@@ -45,7 +45,7 @@ def generate_response():
                 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
                 print(f"Setting up AutoModelForCausalLM") # debug
                 #model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
-                model = AutoModelForCausalLM.from_pretrained("./llama-2-7b-chat.Q5_K_S.gguf")
+                model = AutoModelForCausalLM.from_pretrained("./llama-2-7b-chat.Q5_K_S.gguf", model_type="llama")
                 print(f"Setting up Tokenizer") # debug
                 tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
                 print(f"Setting up ORTModelForSeq2SeqLM") # debug
