@@ -30,37 +30,38 @@ def generate_response():
             user_prompt = data['user_prompt']
             max_tokens = int(data['max_tokens'])
             assistant_context = data['assistant_context']
-            device = ""
 
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
 
+            # Ensure that the model uses GPU if available 
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            # if device != "cuda":
+            #     raise Exception(f"'device' could not be set to 'cuda'. GPU is not being used. device: {device}")
+            print(f"'device' set to '{device}'")
+
             # Load the model and tokenizer if not previously loaded
             if model is None:
-                # Ensure that the model uses GPU if available 
-                device = "cuda" if torch.cuda.is_available() else "cpu"
-                if device != "cuda":
-                    raise Exception(f"'device' could not be set to 'cuda'. GPU is not being used. device: {device}")
-                print(f"'device' set to '{device}'")
                 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
                 print(f"Setting up AutoModelForCausalLM") # debug
                 #model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
                 model = AutoModelForCausalLM.from_pretrained("./llama-2-7b-chat.Q5_K_S.gguf", model_type="llama")
                 print(f"Setting up Tokenizer") # debug
                 tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
-                print(f"Setting up ORTModelForSeq2SeqLM") # debug
-                model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
-                print(f"Model to CUDA") # debug
-                model.to("cuda")
+                #print(f"Setting up ORTModelForSeq2SeqLM") # debug
+                #model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
+                #print(f"Model to CUDA") # debug
+                #model.to("cuda")
                 
             # Generate response using the model
             print(f"Tokenizing") # debug
             inputs = tokenizer(prompt, return_tensors="pt").to(device)
             print(f"Generating output") # debug
-            outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
-            print(f"Tex decoding") # debug
-            generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            
+            #outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
+            outputs = model.generate(inputs.input_ids)
+            #print(f"Text decoding") # debug
+            #generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            print(f"Sending response") # debug
             return jsonify({"response": model(prompt)})
 
         else:
