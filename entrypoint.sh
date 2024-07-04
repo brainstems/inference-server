@@ -27,4 +27,4 @@ fi
 export MODEL_PATH="$MODEL_PATH"
 
 # Run the application
-bash server.py
+python3 server.py
