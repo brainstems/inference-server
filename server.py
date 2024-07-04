@@ -33,19 +33,24 @@ def generate_response():
 
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
-            
+
             # Load the model and tokenizer if not previously loaded
             if model is None:
+                # Ensure that the model uses GPU if available 
+                device = "cuda" if torch.cuda.is_available() else "cpu"
+                if device != "cuda":
+                    raise Exception("'device' could not be set to 'cuda'. GPU is not being used.")
+                print(f"'device' set to '{device}'")
                 # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
-                model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q4_K_M.gguf", model_type="llama", gpu_layers=50)
-              #  tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
-              #  model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
-              #  model.to("cuda")
-             
+                model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
+                tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+                model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
+                model.to("cuda")
+                
             # Generate response using the model
-            # inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
-            # outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
-            # generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            inputs = tokenizer(prompt, return_tensors="pt").to(device)
+            outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
+            generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
             
             return jsonify({"response": model(prompt)})
 

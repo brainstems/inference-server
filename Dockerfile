@@ -15,8 +15,9 @@ COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 # Copy files.
-COPY requirements.txt entrypoint.sh server.py \
-    app.py akash_gpu.sdl download_model.py /app/repo/
+# COPY requirements.txt entrypoint.sh server.py \
+#     app.py akash_gpu.sdl download_model.py /app/repo/
+COPY requirements.txt /app/repo/
 
 # Install project dependencies.
 RUN python3 -m pip install --upgrade pip && \
