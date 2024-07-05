@@ -2,7 +2,7 @@
 
 # Variables
 REPO_URL="https://github.com/brainstems/brainstems-jedai-akash-poc.git"
-REPO_BRANCH=test/newer-cuda-image
+REPO_BRANCH=test/dolphin-2.0-mistral-7b.Q4_K_M.gguf
 APP_DIR="/app/repo"
 REPO_PATH="/app/repo/brainstems-jedai-akash-poc"
 MODEL_URL="TheBloke/Llama-2-7B-Chat-GGUF"
