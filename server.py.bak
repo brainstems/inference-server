@@ -7,12 +7,16 @@ import torch
 
 # Create a Flask object
 app = Flask("Dolphin-2.6.mistral-7b server")
-model = None
-tokenizer = None
+
+# Ensure that the model uses GPU if available 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"'device' set to '{device}'")
 
 # Get the model path from environment variable or use default
-model_path = "TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF" #change for env variable
-tokenizer_path ="gpt2"
+#model_path = "TheBloke/dolphin-2.6-mistral-7B-dpo-laser-GGUF" #change for env variable
+model_name = "gpt2"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
 # Template for the prompt
 template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
 
@@ -20,6 +24,7 @@ template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant
 def generate_response():
     global model
     global tokenizer
+    global device
     
     try:
         data = request.get_json()
@@ -33,36 +38,18 @@ def generate_response():
 
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
-
-            # Ensure that the model uses GPU if available 
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-            # if device != "cuda":
-            #     raise Exception(f"'device' could not be set to 'cuda'. GPU is not being used. device: {device}")
-            print(f"'device' set to '{device}'")
-
-            # Load the model and tokenizer if not previously loaded
-            if model is None:
-                # Set gpu_layers to the number of layers to offload to GPU. Set to 0 if no GPU acceleration is available on your system.
-                print(f"Setting up AutoModelForCausalLM") # debug
-                #model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-Chat-GGUF", model_file="llama-2-7b-chat.Q5_K_S.gguf", model_type="llama", gpu_layers=50)
-                model = AutoModelForCausalLM.from_pretrained("./llama-2-7b-chat.Q5_K_S.gguf", model_type="llama")
-                print(f"Setting up Tokenizer") # debug
-                tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
-                #print(f"Setting up ORTModelForSeq2SeqLM") # debug
-                #model = ORTModelForSeq2SeqLM.from_pretrained(model_path, from_transformers=True)
-                #print(f"Model to CUDA") # debug
-                #model.to("cuda")
-                
+            
             # Generate response using the model
             print(f"Tokenizing") # debug
             inputs = tokenizer(prompt, return_tensors="pt").to(device)
             print(f"Generating output") # debug
-            #outputs = model.generate(inputs.input_ids, max_new_tokens=max_tokens)
-            outputs = model.generate(inputs.input_ids)
-            #print(f"Text decoding") # debug
-            #generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            # Generate text
+            with torch.no_grad():
+                outputs = model.generate(inputs['input_ids'], max_length=100)
+            print(f"Tokenizer decoding") # debug
+            generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
             print(f"Sending response") # debug
-            return jsonify({"response": model(prompt)})
+            return jsonify({'generated_text': generated_text})
 
         else:
             return jsonify({"error": "Missing required parameters"}), 400
