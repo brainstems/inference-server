@@ -8,33 +8,27 @@ app = Flask(__name__)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device set to: {device}")
 
-# Load tokenizer
-tokenizer = AutoTokenizer.from_pretrained("cognitivecomputations/dolphin-2.0-mistral-7b")
-
-# Load model
-#model = AutoModelForCausalLM.from_pretrained("TheBloke/dolphin-2.0-mistral-7B-GGUF", model_file="dolphin-2.0-mistral-7b.Q4_K_M.gguf", model_type="mistral", gpu_layers=50, token=access_token)
-model = AutoModelForCausalLM.from_pretrained("cognitivecomputations/dolphin-2.0-mistral-7b")
+# Load the model and tokenizer
+model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 
 @app.route('/generate', methods=['POST'])
-def generate():
-    print(f"endpoint called!")
-
+def generate_text():
     data = request.json
     prompt = data.get('prompt', '')
 
-    # Tokenize the input prompt
-    print(f"Tokenizing")
-    inputs = tokenizer(prompt, return_tensors='pt').to(device)
+    # Encode the input prompt
+    inputs = tokenizer(prompt, return_tensors='pt')
 
-    # Generate the response
-    print(f"Generation")
-    output = model.generate(**inputs, max_new_tokens=50).to(device)
-    
-    # Decode the generated tokens
-    print(f"Decoding")
-    response = tokenizer.decode(output[0], skip_special_tokens=True)
+    # Generate output
+    with torch.no_grad():
+        outputs = model.generate(inputs['input_ids'], max_length=50, num_return_sequences=1)
 
-    return jsonify({'response': response})
+    # Decode the generated text
+    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    return jsonify({'generated_text': generated_text})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
