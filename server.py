@@ -15,8 +15,6 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 
 @app.route('/dolphin', methods=['POST'])
 def generate_text():
-    print("endpoint called!")
-
     # Template for the prompt
     template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
 
@@ -33,19 +31,18 @@ def generate_text():
             # Create the prompt using the template
             prompt = template.format(system_context=system_context, user_prompt=user_prompt, assistant_context=assistant_context)
             
-            print("prompt has been generated")
-
             # Encode the input prompt
             inputs = tokenizer(prompt, return_tensors='pt')
 
             # Generate output
             with torch.no_grad():
-                outputs = model.generate(inputs['input_ids'], max_length=100, num_return_sequences=1)
+                outputs = model.generate(inputs['input_ids'], max_length=max_tokens, num_return_sequences=1)
 
             # Decode the generated text
             generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-            return jsonify({'generated_text': generated_text})
+            return jsonify({'generated_text': generated_text,
+                            'prompt': prompt})
 
         else:
             return jsonify({"error": "Missing required parameters"}), 400
