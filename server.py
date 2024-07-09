@@ -17,16 +17,21 @@ model = AutoModelForCausalLM.from_pretrained("cognitivecomputations/dolphin-2.0-
 
 @app.route('/generate', methods=['POST'])
 def generate():
+    print(f"endpoint called!")
+
     data = request.json
     prompt = data.get('prompt', '')
 
     # Tokenize the input prompt
-    inputs = tokenizer(prompt, return_tensors='pt').to('cuda:0')
+    print(f"Tokenizing")
+    inputs = tokenizer(prompt, return_tensors='pt').to(device)
 
     # Generate the response
-    output = model.generate(**inputs, max_new_tokens=50).to('cuda:0')
+    print(f"Generation")
+    output = model.generate(**inputs, max_new_tokens=50).to(device)
     
     # Decode the generated tokens
+    print(f"Decoding")
     response = tokenizer.decode(output[0], skip_special_tokens=True)
 
     return jsonify({'response': response})
