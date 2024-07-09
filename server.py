@@ -21,10 +21,10 @@ def generate():
     prompt = data.get('prompt', '')
 
     # Tokenize the input prompt
-    inputs = tokenizer(prompt, return_tensors='pt').to('cuda')
+    inputs = tokenizer(prompt, return_tensors='pt').to('cuda:0')
 
     # Generate the response
-    output = model.generate(**inputs, max_new_tokens=50)
+    output = model.generate(**inputs, max_new_tokens=50).to('cuda:0')
     
     # Decode the generated tokens
     response = tokenizer.decode(output[0], skip_special_tokens=True)

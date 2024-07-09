@@ -11,7 +11,7 @@ MODEL_PATH="llama-2-7b-chat.Q5_K_S.gguf"
 # Change to the app directory
 cd $APP_DIR
 
-Clone the repository
+# Clone the repository
 echo "Cloning repository branch $REPO_BRANCH"
 git clone -b "$REPO_BRANCH" "$REPO_URL"
 
