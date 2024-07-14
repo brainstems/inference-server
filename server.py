@@ -5,11 +5,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
 # Load the model and tokenizer
-# print("Loading model... ")
+print("Loading model... ")
 model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
-# print("Server ready")
+print("Server ready")
 
 async def generate_tokens(prompt, websocket):
     template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
