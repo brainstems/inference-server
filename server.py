@@ -4,6 +4,10 @@ import websockets
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
+# Ensure the model is loaded on the GPU
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"device set to: {device}")
+
 # Load the model and tokenizer
 print("Loading model... ")
 model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
