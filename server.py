@@ -9,10 +9,10 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device set to: {device}")
 
 # Load the model and tokenizer
-# print("Loading model... ")
-# model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
-# tokenizer = AutoTokenizer.from_pretrained(model_name)
-# model = AutoModelForCausalLM.from_pretrained(model_name)
+print("Loading model... ")
+model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 print("Server ready")
 
 async def generate_tokens(prompt, websocket):
@@ -53,8 +53,8 @@ async def test1(prompt, websocket):
 
 async def handler(websocket, path):
     async for message in websocket:
-        #await generate_tokens(message, websocket)
-        await test1(message, websocket)
+        await generate_tokens(message, websocket)
+        #await test1(message, websocket)
 
 async def main():
     async with websockets.serve(handler, "0.0.0.0", 8000):
