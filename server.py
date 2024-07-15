@@ -16,6 +16,7 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 print("Server ready")
 
 async def generate_tokens(prompt, websocket):
+    await websocket.send("Generating tokens")
     template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
     json_prompt = json.loads(prompt)
     if 'system_context' in json_prompt and 'user_prompt' in json_prompt and 'max_tokens' in json_prompt and 'assistant_context' in json_prompt:
@@ -34,6 +35,7 @@ async def generate_tokens(prompt, websocket):
     output_ids = input_ids
 
     print("Generate token-by-token")
+    await websocket.send("Sending token-by-token")
     # Generate token-by-token
     for _ in range(max_tokens):
         outputs = model(output_ids)
