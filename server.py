@@ -12,7 +12,7 @@ print(f"device set to: {device}")
 print("Loading model... ")
 model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
 print("Server ready")
 
 async def generate_tokens(prompt, websocket):
@@ -31,7 +31,7 @@ async def generate_tokens(prompt, websocket):
         print(f"assistant_context: {assistant_context}")
         print(f"prompt: {prompt}")
 
-    input_ids = tokenizer.encode(prompt, return_tensors='pt')
+    input_ids = tokenizer.encode(prompt, return_tensors='pt').to(device)
     output_ids = input_ids
 
     print("Generate token-by-token")
