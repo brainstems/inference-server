@@ -57,7 +57,7 @@ async def handler(websocket, path):
         await test1(message, websocket)
 
 async def main():
-    async with websockets.serve(handler, "localhost", 8000):
+    async with websockets.serve(handler, "localhost", 60000):
         await asyncio.Future()  # run forever
 
 if __name__ == "__main__":
