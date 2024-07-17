@@ -34,7 +34,6 @@ async def generate_tokens(prompt, websocket):
     output_ids = input_ids
 
     print("Generate token-by-token")
-    # Generate token-by-token
     for _ in range(max_tokens):
         outputs = model(output_ids)
         next_token_logits = outputs.logits[:, -1, :]
@@ -46,10 +45,30 @@ async def generate_tokens(prompt, websocket):
         if next_token in tokenizer.eos_token:
             break
 
+async def keep_alive(websocket):
+    while True:
+        try:
+            pong_waiter = await websocket.ping()
+            await pong_waiter 
+            print("Heart beat received")
+            await asyncio.sleep(30) # Send a ping every 30 seconds
+        except websockets.ConnectionClosed:
+            break
 
 async def handler(websocket, path):
-    async for message in websocket:
-        await generate_tokens(message, websocket)
+    keep_alive_task = asyncio.create_task(keep_alive(websocket))
+    try:
+        pong_waiter = await websocket.ping()
+        await pong_waiter
+        async for message in websocket:
+            await generate_tokens(message, websocket)
+    except websockets.ConnectionClosedError:
+        print("Connection closed unexpectedly. Cleaning up...")
+    except websockets.ConnectionClosedOK:
+        print("Connection closed normally.")
+    finally:
+        keep_alive_task.cancel()
+        await keep_alive_task
 
 async def main():
     async with websockets.serve(handler, "0.0.0.0", 8000):
