@@ -10,12 +10,20 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device set to: {device}")
 
 # Load the model and tokenizer
-model_name = os.environ['MODEL_REPO']
-model_file = os.environ['MODEL_FILE']
+#model_name = os.environ['MODEL_REPO']
+#model_name = "TheBloke/dolphin-2.0-mistral-7B-GGUF"
+model_name = "TheBloke/dolphin-2.0-mistral-7B-GGUF"
+#model_file = os.environ['MODEL_FILE']
+model_file = "dolphin-2.0-mistral-7b.Q4_K_M.gguf"
+# If does not work with 'gguf_file', save tokenizer and try loadin from your path (https://stackoverflow.com/questions/62472238/autotokenizer-from-pretrained-fails-to-load-locally-saved-pretrained-tokenizer)
+#tokenizer.save_pretrained('YOURPATH')
+#config.save_pretrained('YOURPATH')
+#tokenizer = AutoTokenizer.from_pretrained('YOURPATH')
 print(f"Loading tokenizer from {model_name}.")
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-print(f"Loading model from repo {model_name}. Model file name {model_file}.")
-model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+#tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name, gguf_file=model_file)
+#print(f"Loading model from repo {model_name}. Model file name {model_file}.")
+model = AutoModelForCausalLM.from_pretrained(model_name, gguf_file=model_file).to(device)
 print("Server ready")
 
 async def generate_tokens(prompt, websocket):
