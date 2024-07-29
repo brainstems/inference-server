@@ -1,8 +1,9 @@
 import asyncio
 import json
 import websockets
-from transformers import AutoModelForCausalLM, AutoTokenizer
+import os
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # Ensure the model is loaded on the GPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -10,9 +11,12 @@ print(f"device set to: {device}")
 
 # Load the model and tokenizer
 print("Loading model... ")
-model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name).to(device)
+#model_name = "cognitivecomputations/dolphin-2.0-mistral-7b"
+print(f"MODEL_REPO: {os.environ['MODEL_REPO']}")
+print(f"MODEL_FILE: {os.environ['MODEL_FILE']}")
+exit
+tokenizer = AutoTokenizer.from_pretrained(os.environ['MODEL_REPO'])
+model = AutoModelForCausalLM.from_pretrained(os.environ['MODEL_FILE']).to(device)
 print("Server ready")
 
 async def generate_tokens(prompt, websocket):
