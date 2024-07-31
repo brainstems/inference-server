@@ -21,7 +21,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_name, gguf_file=model_file)
 print("Server ready")
 
 async def generate_tokens(prompt):
-    template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
+    template = "<|im_start|>system\n{system_context}<|im_end|>\n<|im_start|>user\n{user_prompt}<|im_end|>\n<|im_start|>assistant\n{assistant_context}<|im_end|>"
     try:
         json_prompt = json.loads(prompt)
         if 'system_context' in json_prompt and 'user_prompt' in json_prompt and 'max_tokens' in json_prompt and 'assistant_context' in json_prompt:
@@ -45,16 +45,19 @@ async def generate_tokens(prompt):
     print("Encoding tokens.")
     tokens = model.tokenize(prompt.encode())  # 'prompt.encode()' converts the string to bytes."
     for token in model.generate(tokens):
-        detokenized = model.detokenize([token])
-        token_str = detokenized.decode("utf-8")
-        if token_str == "" or token_str is None:
-            eor = "END_OF_RESPONSE"
-            print(eor)
-            yield eor
-            break
-        token_print = f'{{"token": "{token_str}"}}'
-        print(token_print)
-        yield token_print
+        try:
+            detokenized = model.detokenize([token])
+            token_str = detokenized.decode("utf-8")
+            if token_str == "" or token_str is None:
+                eor = "END_OF_RESPONSE"
+                print(eor)
+                yield eor
+                break
+            token_print = f'{{"token": "{token_str}"}}'
+            print(token_print)
+            yield token_print
+        except Exception as e:
+            print(f"Could not decode token: {e}")
 
 async def keep_alive(websocket):
     while True:
@@ -67,22 +70,23 @@ async def keep_alive(websocket):
             break
 
 async def handler(websocket, path):
-    prompt = await websocket.recv()
-    async for token in generate_tokens(prompt):
-        await websocket.send(token)
+    # prompt = await websocket.recv()
+    # async for token in generate_tokens(prompt):
+    #     await websocket.send(token)
     #keep_alive_task = asyncio.create_task(keep_alive(websocket))
-    #try:
+    try:
         #pong_waiter = await websocket.ping()
         #await pong_waiter
-    #    async for message in websocket:
-    #        await generate_tokens(message, websocket)
-    #except websockets.ConnectionClosedError:
-    #    print("Connection closed unexpectedly. Cleaning up...")
-    #except websockets.ConnectionClosedOK:
-    #    print("Connection closed normally.")
+        prompt = await websocket.recv()
+        async for token in generate_tokens(prompt):
+           await websocket.send(token)
+    except websockets.ConnectionClosedError:
+       print("Connection closed unexpectedly. Cleaning up...")
+    except websockets.ConnectionClosedOK:
+       print("Connection closed normally.")
     #finally:
-    #    keep_alive_task.cancel()
-    #    await keep_alive_task
+       #keep_alive_task.cancel()
+       #await keep_alive_task
 
 async def main():
     async with websockets.serve(handler, "0.0.0.0", 8000):
