@@ -43,16 +43,21 @@ async def generate_tokens(prompt):
         return
     
     print("Encoding tokens.")
-    tokens = model.tokenize(prompt.encode())  # 'prompt.encode()' converts the string to bytes."
+    try:
+        tokens = model.tokenize(prompt.encode())  # 'prompt.encode()' converts the string to bytes."
+    except Exception as e:
+        reason = "Invalid prompt."
+        print(reason)
+        model.reset()
+        yield reason
+        return
+
     for token in model.generate(tokens):
         try:
             detokenized = model.detokenize([token])
             token_str = detokenized.decode("utf-8")
             if token_str == "" or token_str is None:
-                # eor = "END_OF_RESPONSE"
-                # print(eor)
-                # yield eor
-                break
+                return
             token_print = f'{{"token": "{token_str}"}}'
             print(token_print)
             yield token_print
@@ -68,15 +73,12 @@ async def keep_alive(websocket):
             await asyncio.sleep(30) # Send a ping every 30 seconds
         except websockets.ConnectionClosed:
             break
+        except Exception as e:
+            print(f"Error in keep_alive: {e}")
+            break
 
 async def handler(websocket, path):
-    # prompt = await websocket.recv()
-    # async for token in generate_tokens(prompt):
-    #     await websocket.send(token)
-    #keep_alive_task = asyncio.create_task(keep_alive(websocket))
     try:
-        #pong_waiter = await websocket.ping()
-        #await pong_waiter
         prompt = await websocket.recv()
         async for token in generate_tokens(prompt):
            await websocket.send(token)
@@ -84,9 +86,8 @@ async def handler(websocket, path):
        print("Connection closed unexpectedly. Cleaning up...")
     except websockets.ConnectionClosedOK:
        print("Connection closed normally.")
-    #finally:
-       #keep_alive_task.cancel()
-       #await keep_alive_task
+    except Exception as e:
+        print(f"Connection error: {e}")
 
 async def main():
     async with websockets.serve(handler, "0.0.0.0", 8000):
