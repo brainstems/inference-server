@@ -1,3 +1,4 @@
+import os
 import asyncio
 import json
 import websockets
@@ -10,10 +11,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device set to: {device}")
 
 # Load the model and tokenizer
-#model_name = os.environ['MODEL_REPO']
-model_name = "TheBloke/dolphin-2.0-mistral-7B-GGUF"
-#model_file = os.environ['MODEL_FILE']
-model_file = "dolphin-2.0-mistral-7b.Q4_K_M.gguf"
+model_name = os.environ['MODEL_REPO']
+model_file = os.environ['MODEL_FILE']
 model_path = f"model/{model_file}"
 print("Loading model")
 model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=50)
