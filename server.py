@@ -49,9 +49,9 @@ async def generate_tokens(prompt):
             detokenized = model.detokenize([token])
             token_str = detokenized.decode("utf-8")
             if token_str == "" or token_str is None:
-                eor = "END_OF_RESPONSE"
-                print(eor)
-                yield eor
+                # eor = "END_OF_RESPONSE"
+                # print(eor)
+                # yield eor
                 break
             token_print = f'{{"token": "{token_str}"}}'
             print(token_print)
