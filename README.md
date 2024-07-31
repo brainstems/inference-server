@@ -16,3 +16,7 @@ docker run --name inference-server --gpus all \
     -e REPO_BRANCH="feat/TheBloke_dolphin-2.0-mistral-7B-GGUF" \
     ernestbs/jedai-akash-poc:v0.1.0-cu12.4-ubu22
 ```
+
+## 
+https://github.com/abetlen/llama-cpp-python/issues/509
+https://github.com/ggerganov/llama.cpp/blob/master/docs/build.md
