@@ -15,7 +15,7 @@ model_name = os.environ['MODEL_REPO']
 model_file = os.environ['MODEL_FILE']
 model_path = f"model/{model_file}"
 print("Loading model")
-model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=10)
+model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=50)
 print("Loading tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(model_name, gguf_file=model_file)
 print("Server ready")
