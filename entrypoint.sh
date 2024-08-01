@@ -12,6 +12,7 @@ git clone -b "$REPO_BRANCH" "$REPO_URL"
 
 # Move the model dir to the inference-server dir.
 mv model/ inference-server/
+mv libllama.so inference-server/
 
 cd "$REPO_LOCAL_PATH"
 

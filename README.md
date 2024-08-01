@@ -10,6 +10,13 @@ Export env vars
 ```
 export MODEL_REPO="TheBloke/dolphin-2.0-mistral-7B-GGUF"
 export MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf"
+
+# These are required to have GPU acceleretaion.
+export CUDA_HOME=/path/to/nvidia-cuda-toolkit
+export PATH=${CUDA_HOME}/bin:$PATH
+export LLAMA_CUBLAS=on
+export GGML_CUDA=on
+export LLAMA_CPP_LIB=path/to/libllama.so
 ```
 Create Python virtual environement
 ```
