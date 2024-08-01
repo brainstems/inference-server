@@ -18,6 +18,13 @@ export LLAMA_CUBLAS=on
 export GGML_CUDA=on
 export LLAMA_CPP_LIB=path/to/libllama.so
 ```
+The `libllama.so` file is the `llama-cpp-python` Linux x64 dynamic library compiled with GPU support. It is required to have GPU acceletation.
+
+For further information refer to:
+- https://github.com/abetlen/llama-cpp-python/issues/509
+- https://github.com/ggerganov/llama.cpp
+
+
 Create Python virtual environement
 ```
 python3 -m venv v-env
