@@ -12,13 +12,10 @@ export MODEL_REPO="TheBloke/dolphin-2.0-mistral-7B-GGUF"
 export MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf"
 
 # These are required to have GPU acceleretaion.
-export CUDA_HOME=/path/to/nvidia-cuda-toolkit
-export PATH=${CUDA_HOME}/bin:$PATH
-export LLAMA_CUBLAS=on
-export GGML_CUDA=on
 export LLAMA_CPP_LIB=path/to/libllama.so
+export LD_LIBRARY_PATH=.
 ```
-The `libllama.so` file is the `llama-cpp-python` Linux x64 dynamic library compiled with GPU support. It is required to have GPU acceletation.
+The `libllama.so` and `libggml.so` files are the `llama-cpp-python` Linux x64 dynamic libraries compiled with GPU support. It is required to have GPU acceletation.
 
 For further information refer to:
 - https://github.com/abetlen/llama-cpp-python/issues/509

@@ -18,6 +18,7 @@ RUN chmod +x /app/entrypoint.sh
 COPY requirements.txt /app/repo/
 COPY model /app/repo/model
 COPY libllama.so /app/repo/
+COPY libggml.so /app/repo/
 
 # Install project dependencies.
 RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
