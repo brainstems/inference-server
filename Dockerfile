@@ -20,7 +20,7 @@ COPY model /app/repo/model
 COPY libllama.so /app/repo/
 
 # Install project dependencies.
- RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
+RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
 
 # Clean up APT when done
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
