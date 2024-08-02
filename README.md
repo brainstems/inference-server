@@ -11,17 +11,6 @@ Export env vars
 export MODEL_REPO="TheBloke/dolphin-2.0-mistral-7B-GGUF"
 export MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf"
 
-# These are required to have GPU acceleretaion.
-export LLAMA_CPP_LIB=path/to/libllama.so
-export LD_LIBRARY_PATH=.
-```
-The `libllama.so` and `libggml.so` files are the `llama-cpp-python` Linux x64 dynamic libraries compiled with GPU support. It is required to have GPU acceletation.
-
-For further information refer to:
-- https://github.com/abetlen/llama-cpp-python/issues/509
-- https://github.com/ggerganov/llama.cpp
-
-
 Create Python virtual environement
 ```
 python3 -m venv v-env
