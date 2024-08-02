@@ -5,26 +5,21 @@ FROM --platform=linux/amd64 nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 WORKDIR /app
 
 # Install necessary packages
-RUN apt-get update && apt-get install -y \
-    python3-pip \
-    git \
-    wget
+RUN apt-get update && apt-get install -y git wget libcublas11 python3-pip python3-venv
 
 # Copy the entrypoint script into the container.
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Copy files.
+# Copy files and dirs.
 COPY requirements.txt /app/repo/
 COPY model /app/repo/model
 COPY libllama.so /app/repo/
 COPY libggml.so /app/repo/
+COPY libcudart.so.11.8.89 /app/repo/
 
 # Install project dependencies.
 RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
-
-# Clean up APT when done
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 8000
 
