@@ -1,4 +1,3 @@
-llama-cpp-python
 Flask
 transformers
 optimum[onnxruntime-gpu]

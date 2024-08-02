@@ -52,7 +52,7 @@ wget -P model https://huggingface.co/TheBloke/dolphin-2.0-mistral-7B-GGUF/resolv
 
 Building the docker image
 ```
-docker build -t ernestbs/inference-server:v0.2.0-x64-cu12.4-ubu22 .
+docker build -t ernestbs/inference-server:v0.3.0-x64-cu12.4-ubu22 .
 ```
 
 ## Running Docker
@@ -63,5 +63,5 @@ docker run --name inference-server --gpus all \
     -e MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf" \
     -e REPO_URL="https://github.com/brainstems/inference-server.git" \
     -e REPO_BRANCH="main" \
-    ernestbs/inference-server:v0.2.1-x64-cu12.4-ubu22
+    ernestbs/inference-server:v0.3.0-x64-cu12.4-ubu22
 ```
