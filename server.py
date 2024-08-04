@@ -15,7 +15,9 @@ model_name = os.environ['MODEL_REPO']
 model_file = os.environ['MODEL_FILE']
 model_path = f"model/{model_file}"
 print("Loading model")
-model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=50)
+model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
+              n_ctx = 4096,
+              n_threads = 4)
 print("Loading tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(model_name, gguf_file=model_file)
 print("Server ready")
@@ -42,7 +44,6 @@ async def generate_tokens(prompt):
         yield reason
         return
     
-    print("Encoding tokens.")
     try:
         tokens = model.tokenize(prompt.encode())  # 'prompt.encode()' converts the string to bytes."
     except Exception as e:
@@ -51,11 +52,12 @@ async def generate_tokens(prompt):
         model.reset()
         yield reason
         return
-
+    
     for token in model.generate(tokens):
         try:
             detokenized = model.detokenize([token])
             token_str = detokenized.decode("utf-8")
+            # 'stop' setting param does not seem to be working when loading the model. So, we stop when start receiving empty responses.
             if token_str == "" or token_str is None:
                 return
             token_print = f'{{"token": "{token_str}"}}'
@@ -63,19 +65,6 @@ async def generate_tokens(prompt):
             yield token_print
         except Exception as e:
             print(f"Could not decode token: {e}")
-
-async def keep_alive(websocket):
-    while True:
-        try:
-            pong_waiter = await websocket.ping()
-            await pong_waiter 
-            print("Heart beat received")
-            await asyncio.sleep(30) # Send a ping every 30 seconds
-        except websockets.ConnectionClosed:
-            break
-        except Exception as e:
-            print(f"Error in keep_alive: {e}")
-            break
 
 async def handler(websocket, path):
     try:
