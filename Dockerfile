@@ -18,6 +18,7 @@ COPY model /app/repo/model
 
 # Install project dependencies.
 RUN pip install --upgrade pip
+# https://python.langchain.com/v0.2/docs/integrations/llms/llamacpp/#installation-with-openblas--cublas--clblast
 RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
 RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
 
