@@ -37,7 +37,7 @@ async def generate_tokens(prompt):
             yield reason
             return
     except Exception as e:
-        reason = "Error generating token: {e}"
+        reason = f"Error generating token: {e}"
         print(reason)
         yield reason
         return
@@ -58,9 +58,8 @@ async def generate_tokens(prompt):
             # 'stop' setting param does not seem to be working when loading the model. So, we stop when start receiving empty responses.
             if token_str == "" or token_str is None:
                 return
-            token_print = f'{{"token": "{token_str}"}}'
-            print(token_print)
-            yield token_print
+            print(token_str)
+            yield token_str
         except Exception as e:
             print(f"Could not decode token: {e}")
 
