@@ -3,7 +3,6 @@ import asyncio
 import json
 import websockets
 import torch
-from transformers import AutoTokenizer
 from llama_cpp import Llama
 
 # Ensure the model is loaded on the GPU
@@ -17,9 +16,8 @@ model_path = f"model/{model_file}"
 print("Loading model")
 model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
               n_ctx = 4096,
-              n_threads = 4)
-print("Loading tokenizer")
-tokenizer = AutoTokenizer.from_pretrained(model_name, gguf_file=model_file)
+              n_threads = 4,
+              stop=[""])
 print("Server ready")
 
 async def generate_tokens(prompt):
