@@ -10,10 +10,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device set to: {device}")
 
 # Load the model and tokenizer
+preemptiveness = os.getenv("PREEMPTIVENESS", "0")
+print(f"Preemptiveness: {preemptiveness}")
 model_name = os.environ['MODEL_REPO']
 model_file = os.environ['MODEL_FILE']
 model_path = f"model/{model_file}"
-print("Loading model")
+print(f"Loading model: {model_file}")
 model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
               n_ctx = 4096,
               n_threads = 4,
@@ -51,8 +53,14 @@ async def generate_tokens(prompt):
         yield reason
         return
     
+    
     for token in model.generate(tokens):
         try:
+            # EXPERIMENTAL:
+            #   Due to lack of scheduling once entered this 'for generation loop', we simulte preemptiveness to have parallelism.
+            #   We did not have good stable results so far. Be aware that this implementation introduces latency per token generation.
+            if preemptiveness == "1":
+                await asyncio.sleep(0.01)
             detokenized = model.detokenize([token])
             token_str = detokenized.decode("utf-8")
             # 'stop' setting param does not seem to be working when loading the model. So, we stop when start receiving empty responses.
