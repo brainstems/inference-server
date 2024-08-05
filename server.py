@@ -36,8 +36,8 @@ async def generate_tokens(prompt):
             print(reason)
             yield reason
             return
-    except:
-        reason = "Bad prompt."
+    except Exception as e:
+        reason = "Error generating token: {e}"
         print(reason)
         yield reason
         return
