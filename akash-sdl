@@ -2,18 +2,20 @@
 version: "2.0"
 services:
   inference:
-    image: ernestbs/inference-server:v0.3.0-x64-cu12.4-ubu22
+    image: ernestbs/inference-server:v0.3.2-cu12.4-ubu22
     expose:
       - port: 8000
-        as: 8000
+        as: 80
         proto: tcp
         to:
           - global: true
+        accept:
+          - inf1.jedai.brainstems.ai
     env:
       - MODEL_REPO=TheBloke/dolphin-2.0-mistral-7B-GGUF
       - MODEL_FILE=dolphin-2.0-mistral-7b.Q4_K_M.gguf
       - REPO_URL=https://github.com/brainstems/inference-server.git
-      - REPO_BRANCH=feat/gpu-dependencies
+      - REPO_BRANCH=v0.3.4
 profiles:
   compute:
     inference:
@@ -23,7 +25,7 @@ profiles:
         memory:
           size: 64Gi
         storage:
-          - size: 150Gi
+          - size: 100Gi
         gpu:
           units: 1
           attributes:

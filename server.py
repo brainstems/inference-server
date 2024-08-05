@@ -21,7 +21,7 @@ model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
 print("Server ready")
 
 async def generate_tokens(prompt):
-    template = "<|im_start|>system\n{system_context}<|im_end|>\n<|im_start|>user\n{user_prompt}<|im_end|>\n<|im_start|>assistant\n{assistant_context}<|im_end|>"
+    template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
     try:
         json_prompt = json.loads(prompt)
         if 'system_context' in json_prompt and 'user_prompt' in json_prompt and 'max_tokens' in json_prompt and 'assistant_context' in json_prompt:
