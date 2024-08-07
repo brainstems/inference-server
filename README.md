@@ -19,8 +19,10 @@ source v-venv/bin/activate
 ```
 Install dependencies
 ```
+CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
 pip install -r requirements.txt
 ```
+`llama-cpp-python` needs to be installed with CUDA support, as performed in the command above.
 
 ## Running
 Enter the virtual environemnt created in the previous step
