@@ -11,11 +11,12 @@ services:
           - global: true
         accept:
           - inf1.jedai.brainstems.ai
+          - inf2-jedai.brainstems.ai
     env:
       - MODEL_REPO=TheBloke/dolphin-2.0-mistral-7B-GGUF
       - MODEL_FILE=dolphin-2.0-mistral-7b.Q4_K_M.gguf
       - REPO_URL=https://github.com/brainstems/inference-server.git
-      - REPO_BRANCH=v0.3.4
+      - REPO_BRANCH=v0.4.0
 profiles:
   compute:
     inference:
