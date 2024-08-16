@@ -5,6 +5,7 @@ This server provides inferencing by hosting LLM.
 Tested on:
 - Linux Debian 12 x64
 - Python 3.11
+- Pytest, Pytest-asyncio (Optional, if you want to run unit tests)
 
 Export env vars
 ```
@@ -34,6 +35,24 @@ Run the Inference Server
 python server.py
 ```
 
+## Running unit tests
+Pytest is required. Also `pytest-asyncio` to test `async` functions.
+```
+pip install pytest pytest-asyncio
+```
+Setup the ENV environment variable to `TESTING`
+```
+export ENV=TESTING
+```
+Run the tests
+```
+pytest [test/<unit_tests>]
+```
+For instance
+```
+pytest
+```
+
 ## Building Docker
 
 Download the model and put it in a `model` directory at the project level.
@@ -44,7 +63,7 @@ wget -P model https://huggingface.co/TheBloke/dolphin-2.0-mistral-7B-GGUF/resolv
 
 Building the docker image
 ```
-docker build -t ernestbs/inference-server:v0.3.2-cu12.4-ubu22 .
+docker build -t ernestbs/inference-server:v0.4.0-cu124-ubu22 .
 ```
 
 ## Running Docker

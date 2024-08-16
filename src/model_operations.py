@@ -1,26 +1,38 @@
 import os
-import asyncio
 import json
-import websockets
-import torch
+if (os.environ['ENV'] == "TESTING"):
+    from tests.model_mock import ModelMock
+# from tests.model_mock import ModelMock
 from llama_cpp import Llama
 
-# Ensure the model is loaded on the GPU
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"device set to: {device}")
+def load_model(model_path, n_ctx):
+    """
+    Loads a model.
 
-# Load the model and tokenizer
-model_name = os.environ['MODEL_REPO']
-model_file = os.environ['MODEL_FILE']
-model_path = f"model/{model_file}"
-print("Loading model")
-model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
-              n_ctx = 4096,
-              n_threads = 4,
-              stop=[""])
-print("Server ready")
+    Parameters:
+    model_path (string): Path to the model.
+    n_ctx (int): The number of context tokens. It includes prompts.
 
-async def generate_tokens(prompt):
+    Returns:
+    The model object.
+    """
+    # ToDo: Move this env check to a file operations.
+    if (os.environ['ENV'] == "TESTING"):
+        return ModelMock()
+    model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
+            n_ctx = n_ctx,
+            n_threads = 4,
+            stop=[""])
+    return model
+
+async def generate_tokens(prompt, model):
+    """
+    Generates tokens from the given prompt and model.
+
+    Parameters:
+    prompt (string): The prompt.
+    model (Model object): The model object.
+    """
     template = "system\n{system_context}\nuser\n{user_prompt}\nassistant\n{assistant_context}"
     try:
         json_prompt = json.loads(prompt)
@@ -62,22 +74,3 @@ async def generate_tokens(prompt):
             yield token_str
         except Exception as e:
             print(f"Could not decode token: {e}")
-
-async def handler(websocket, path):
-    try:
-        prompt = await websocket.recv()
-        async for token in generate_tokens(prompt):
-           await websocket.send(token)
-    except websockets.ConnectionClosedError:
-       print("Connection closed unexpectedly. Cleaning up...")
-    except websockets.ConnectionClosedOK:
-       print("Connection closed normally.")
-    except Exception as e:
-        print(f"Connection error: {e}")
-
-async def main():
-    async with websockets.serve(handler, "0.0.0.0", 8000):
-        await asyncio.Future()  # run forever
-
-if __name__ == "__main__":
-    asyncio.run(main())
