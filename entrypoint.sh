@@ -18,4 +18,4 @@ cd "$REPO_LOCAL_PATH"
 
 # Run the application
 echo "Running server"
-python3 server.py
+python3 src/server.py
