@@ -17,7 +17,7 @@ def load_model(model_path, n_ctx):
     The model object.
     """
     # ToDo: Move this env check to a file operations.
-    if (os.environ['ENV'] == "TESTING"):
+    if (os.environ.get('ENV', 'PROD')):
         return ModelMock()
     model = Llama(model_path=model_path, use_gpu=True, n_gpu_layers=-1,
             n_ctx = n_ctx,
