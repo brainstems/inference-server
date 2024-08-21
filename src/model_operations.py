@@ -1,8 +1,7 @@
 import os
 import json
-if (os.environ['ENV'] == "TESTING"):
+if (os.environ.get('ENV', 'PROD') == "TESTING"):
     from tests.model_mock import ModelMock
-# from tests.model_mock import ModelMock
 from llama_cpp import Llama
 
 def load_model(model_path, n_ctx):
