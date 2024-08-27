@@ -77,9 +77,10 @@ async def generate_tokens(prompt, model):
         tokens = model.tokenize(
             prompt.encode()
         )  # 'prompt.encode()' converts the string to bytes."
-    except Exception:
+    except Exception as e:
         reason = "Invalid prompt."
         print(reason)
+        print(str(e))
         model.reset()
         yield reason
         return

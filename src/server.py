@@ -1,7 +1,7 @@
 import asyncio
 
 import websockets
-
+import os
 from cuda_utils import cuda_device_enable
 from model_operations import generate_tokens, load_model
 
@@ -9,8 +9,8 @@ from model_operations import generate_tokens, load_model
 print(f"device set to: {cuda_device_enable()}")
 
 # Load the model and tokenizer
-model_name = "TheBloke/dolphin-2.0-mistral-7B-GGUF"
-model_file = "dolphin-2.0-mistral-7b.Q4_K_M.gguf"
+model_name = os.environ['MODEL_REPO']
+model_file = os.environ['MODEL_FILE']
 model_path = f"model/{model_file}"
 print("Loading model")
 model = load_model(model_path=model_path, n_ctx=4096)
