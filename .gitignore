@@ -6,3 +6,5 @@ pyvenv.cfg
 share
 model/
 *__pycache__*
+.idea
+.env
