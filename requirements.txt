@@ -1,2 +1,5 @@
 websockets
 torch
+pytest
+pytest-cov
+llama-cpp-python
