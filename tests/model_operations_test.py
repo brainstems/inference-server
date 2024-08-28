@@ -1,6 +1,8 @@
-import pytest
-from model_mock import ModelMock
+from unittest.mock import patch, MagicMock
 
+import pytest
+
+from model_mock import ModelMock
 from src.model_operations import generate_tokens, load_model
 
 model = ModelMock()
@@ -12,7 +14,13 @@ prompt = """
         """
 
 
-def test_given_mock_model_can_be_loaded():
+@patch("src.model_operations.Llama")
+@patch("src.model_operations.os.path.exists", return_value=True)
+def test_given_mock_model_can_be_loaded(mock_exists, mock_llama):
+    mock_llama_instance = MagicMock()
+    mock_llama.return_value = mock_llama_instance
+    mock_llama_instance.name = "mock"
+
     model = load_model("path1", 1)
     assert model.name == "mock"
 
