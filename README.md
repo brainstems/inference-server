@@ -7,12 +7,6 @@ Tested on:
 - Python 3.11
 - Pytest, Pytest-asyncio (Optional, if you want to run unit tests)
 
-Export env vars
-```
-export MODEL_REPO="TheBloke/dolphin-2.0-mistral-7B-GGUF"
-export MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf"
-```
-
 Create Python virtual environement
 ```
 python3 -m venv v-env
@@ -69,10 +63,10 @@ docker build -t ernestbs/inference-server:v0.4.0-cu124-ubu22 .
 ## Running Docker
 ```
 docker run --name inference-server --gpus all \
-    -p 8000:8000 \
-    -e MODEL_REPO="TheBloke/dolphin-2.0-mistral-7B-GGUF" \
-    -e MODEL_FILE="dolphin-2.0-mistral-7b.Q4_K_M.gguf" \
-    -e REPO_URL="https://github.com/brainstems/inference-server.git" \
-    -e REPO_BRANCH="main" \
-    ernestbs/inference-server:v0.3.2-cu12.4-ubu22
+    -p 8000:8000 -p 8080:8080 \
+    -e AWS_ACCESS_KEY_ID="your-access-key-id" \
+    -e AWS_SECRET_ACCESS_KEY="your-secret-access-key" \
+    -e AWS_DEFAULT_REGION="us-west-2" \
+    -e MONGO_URI="mongodb://localhost:27017" \
+    inference-server-custom:latest
 ```
