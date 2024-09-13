@@ -4,3 +4,4 @@ llama-cpp-python
 aiohttp
 pytest-aiohttp
 pymongo
+pydantic
