@@ -1,5 +1,7 @@
 import asyncio
+import os
 
+import boto3
 import websockets
 from aiohttp import web
 from dotenv import load_dotenv
