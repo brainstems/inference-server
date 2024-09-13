@@ -66,7 +66,7 @@ async def list_models_handler(request):
     Lists all models via an HTTP GET request.
     """
     try:
-        models = model_service.list_all_models()
+        models = await model_service.list_all_models()
 
         for model in models:
             if '_id' in model:
