@@ -5,3 +5,4 @@ aiohttp
 pytest-aiohttp
 pymongo
 pydantic
+boto3
