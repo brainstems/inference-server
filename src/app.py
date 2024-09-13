@@ -13,6 +13,15 @@ db = client['inference_server']
 model_repository = ModelRepository(db)
 model_service = ModelService(model_repository)
 
+"""
+In the app.py file, create a dedicated section specifically for handling the routing of MongoDB model elements.
+This involves setting up endpoints that interact with the MongoDB models, such as creating, reading, updating,
+and deleting documents. By centralizing these routes in one section, we can manage the models more effectively 
+and maintain cleaner code. This organization not only improves the current structure but also lays the foundation
+for decoupling the models into an independent repository in the future, enhancing modularity and facilitating
+easier maintenance and scalability.
+"""
+
 
 async def add_model_handler(request):
     """
