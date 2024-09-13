@@ -46,10 +46,10 @@ async def generate_tokens(prompt, model):
     try:
         json_prompt = json.loads(prompt)
         if (
-            "system_context" in json_prompt
-            and "user_prompt" in json_prompt
-            and "max_tokens" in json_prompt
-            and "assistant_context" in json_prompt
+                "system_context" in json_prompt
+                and "user_prompt" in json_prompt
+                and "max_tokens" in json_prompt
+                and "assistant_context" in json_prompt
         ):
             system_context = json_prompt["system_context"]
             user_prompt = json_prompt["user_prompt"]
