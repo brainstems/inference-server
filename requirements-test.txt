@@ -1,3 +1,8 @@
 pytest
 pytest-cov
 llama-cpp-python
+aiohttp
+pytest-aiohttp
+pymongo
+pydantic
+boto3
