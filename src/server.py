@@ -5,7 +5,7 @@ from aiohttp import web
 from dotenv import load_dotenv
 
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
-from model_operations import generate_tokens, load_model
+from src.services.engine_models import EngineService
 
 load_dotenv()
 
@@ -23,11 +23,19 @@ async def handler(websocket, path):
 
         model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path)
         print(f"Loading model from {model_path}")
-        model = load_model(model_path=model_path, n_ctx=4096)
-        print("Model loaded successfully.")
+        #
+        # model_service.generate_response(model_metadata)
+        #
+        #
+        # model = load_model(model_path=model_path, n_ctx=4096)
+        # print("Model loaded successfully.")
+        #
+        # async for token in generate_tokens(prompt, model):
+        #     await websocket.send(token)
 
-        async for token in generate_tokens(prompt, model):
-            await websocket.send(token)
+        service = EngineService(model_metadata.engine, model_metadata)
+        response = service.process(prompt)
+        websocket.send(response)
 
     except websockets.ConnectionClosedError:
         print("Connection closed unexpectedly. Cleaning up...")

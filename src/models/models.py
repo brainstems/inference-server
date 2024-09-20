@@ -33,7 +33,8 @@ class ModelSchemaBase(BaseModel):
     model_name: Optional[str]
     s3_path: str
     enabled: bool
-
+    tag: str
+    engine: str
     class Config:
         populate_by_name = True
         json_encoders = {ObjectId: str}
