@@ -8,8 +8,8 @@ class ModelRepository:
     def __init__(self, db):
         self.collection = db['models']
 
-    def get_active_model(self):
-        result = self.collection.find_one({"enabled": True})
+    def get_active_model(self, tag: str):
+        result = self.collection.find_one({"enabled": True, "tag": tag})
         if result:
             return ModelSchema(**result)
         return None

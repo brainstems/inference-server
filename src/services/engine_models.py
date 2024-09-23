@@ -1,3 +1,5 @@
+import os
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from src.model_operations import generate_tokens, load_model
@@ -14,8 +16,11 @@ class BaseEngine:
 class EngineTransformer(BaseEngine):
     def __init__(self, model_metadata):
         super().__init__(model_metadata)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_metadata["model_name"])
-        self.model = AutoModelForCausalLM.from_pretrained(model_metadata["model_name"])
+        self.current_path = os.getcwd()
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
+        self.model = AutoModelForCausalLM.from_pretrained(
+            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
 
     def process(self, prompt):
         inputs = self.tokenizer(prompt, return_tensors="pt")
@@ -27,7 +32,8 @@ class EngineTransformer(BaseEngine):
 class EngineLlama(BaseEngine):
     def __init__(self, model_metadata):
         super().__init__(model_metadata)
-        self.model = load_model(model_metadata["model_path"], n_ctx=4096)
+        self.current_path = os.getcwd()
+        self.model = load_model(f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}', n_ctx=4096)
         print("Modelo Llama cargado exitosamente.")
 
     async def process(self, prompt, websocket):
@@ -53,17 +59,17 @@ class EngineService:
         else:
             return self.engine.process(prompt)
 
-
-if __name__ == "__main__":
-    model_metadata_transformer = {
-        "model_name": "ai21labs/AI21-Jamba-1.5-Mini"
-    }
-
-    model_metadata_llama = {
-        "model_path": "ruta_al_modelo_llama"
-    }
-
-    service = EngineService("transformer", model_metadata_transformer)
-    prompt = "¿Cuál es el futuro de la inteligencia artificial?"
-    respuesta = service.process(prompt)
-    print("Respuesta generada (Transformer):", respuesta)
+#
+# if __name__ == "__main__":
+#     model_metadata_transformer = {
+#         "model_name": "ai21labs/AI21-Jamba-1.5-Mini"
+#     }
+#
+#     model_metadata_llama = {
+#         "model_path": "ruta_al_modelo_llama"
+#     }
+#
+#     service = EngineService("transformer", model_metadata_transformer)
+#     prompt = "¿Cuál es el futuro de la inteligencia artificial?"
+#     respuesta = service.process(prompt)
+#     print("Respuesta generada (Transformer):", respuesta)

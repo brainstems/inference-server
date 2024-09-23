@@ -35,6 +35,7 @@ class ModelSchemaBase(BaseModel):
     enabled: bool
     tag: str
     engine: str
+
     class Config:
         populate_by_name = True
         json_encoders = {ObjectId: str}

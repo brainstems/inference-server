@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 import websockets
 from aiohttp import web
@@ -16,22 +17,14 @@ async def handler(websocket, path):
     """
     try:
         prompt = await websocket.recv()
-
-        model_metadata = model_service.get_active_model()
+        tag = json.loads(prompt)['tag']
+        model_metadata = model_service.get_active_model(tag=tag)
         if not model_metadata:
             raise Exception("No active model found in the database.")
 
-        model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path)
+        model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path,
+                                                       model_metadata.engine)
         print(f"Loading model from {model_path}")
-        #
-        # model_service.generate_response(model_metadata)
-        #
-        #
-        # model = load_model(model_path=model_path, n_ctx=4096)
-        # print("Model loaded successfully.")
-        #
-        # async for token in generate_tokens(prompt, model):
-        #     await websocket.send(token)
 
         service = EngineService(model_metadata.engine, model_metadata)
         response = service.process(prompt)
