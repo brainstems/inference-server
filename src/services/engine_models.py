@@ -1,6 +1,6 @@
 import os
-import torch
 
+import torch
 from model_operations import generate_tokens, load_model
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -21,10 +21,16 @@ class EngineTransformer(BaseEngine):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
+            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
+            use_mamba_kernels=False,
+        )
 
         self.model = AutoModelForCausalLM.from_pretrained(
-            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
+            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
+            torch_dtype=torch.bfloat16,
+            device_map="auto",
+            use_mamba_kernels=False
+        )
 
         self.model.to(self.device)
 
@@ -65,17 +71,12 @@ class EngineService:
         else:
             return self.engine.process(prompt)
 
-#
-# if __name__ == "__main__":
-#     model_metadata_transformer = {
-#         "model_name": "ai21labs/AI21-Jamba-1.5-Mini"
-#     }
-#
-#     model_metadata_llama = {
-#         "model_path": "ruta_al_modelo_llama"
-#     }
-#
-#     service = EngineService("transformer", model_metadata_transformer)
-#     prompt = "¿Cuál es el futuro de la inteligencia artificial?"
-#     respuesta = service.process(prompt)
-#     print("Respuesta generada (Transformer):", respuesta)
+if __name__ == "__main__":
+    model_metadata = {
+        "model_name": "ai21labs/AI21-Jamba-1.5-Mini"
+    }
+
+    engine = EngineTransformer(model_metadata)
+    prompt = "Tell me something wise."
+    response = engine.process(prompt)
+    print(response)
