@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
 from models.models import ModelSchema
 from services.engine_models import EngineService
-
+from cuda_utils import cuda_device_enable
 load_dotenv()
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
@@ -67,6 +67,7 @@ async def start_websocket_server():
     """
     Starts the WebSocket server on port 8000.
     """
+    logging.info(f"Cuda device enabled {cuda_device_enable}")
     try:
         async with websockets.serve(handler, "0.0.0.0", 8000):
             print("WebSocket server running on ws://0.0.0.0:8000")

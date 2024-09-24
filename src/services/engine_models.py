@@ -1,8 +1,8 @@
 import os
-
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
 from model_operations import generate_tokens, load_model
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
 class BaseEngine:
@@ -17,13 +17,19 @@ class EngineTransformer(BaseEngine):
     def __init__(self, model_metadata):
         super().__init__(model_metadata)
         self.current_path = os.getcwd()
+
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
+
         self.model = AutoModelForCausalLM.from_pretrained(
             f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}')
 
+        self.model.to(self.device)
+
     def process(self, prompt):
-        inputs = self.tokenizer(prompt, return_tensors="pt")
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
         outputs = self.model.generate(inputs['input_ids'], max_new_tokens=100)
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response
