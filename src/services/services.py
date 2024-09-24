@@ -6,7 +6,7 @@ import boto3
 from models.models import ModelSchema
 from repositories.repositories import ModelRepository
 
-
+import logging
 class ModelService:
     def __init__(self, model_repository: ModelRepository):
         self.model_repository = model_repository
@@ -85,15 +85,22 @@ class ModelService:
         """
         Ensures the model exists locally, downloading it from S3 if necessary.
         """
+
+        logging.info(f'Checking engine')
+
         if engine == "transformer":
+            logging.info(f'Transformer engine selected')
             local_model_path = f"../../model/{model_name}"
             if not os.path.exists(local_model_path):
                 print(f"Downloading model from {model_s3_path}")
                 self.download_folder_from_s3(model_s3_path, local_model_path)
+            logging.info(f'Downloaded model from {model_s3_path}')
             return local_model_path
         else:
+            logging.info(f'Llama engine selected')
             local_model_path = f"../../model/{model_name}.gguf"
             if not os.path.exists(local_model_path):
                 print(f"Downloading model from {model_s3_path}")
                 self.download_model_from_s3(model_s3_path, local_model_path)
+            logging.info(f'Downloaded model from {model_s3_path}')
             return local_model_path

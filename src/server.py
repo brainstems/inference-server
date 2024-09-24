@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 
 import websockets
 from aiohttp import web
@@ -18,10 +19,14 @@ async def handler(websocket, path):
     try:
         prompt = await websocket.recv()
         tag = json.loads(prompt)['tag']
+        logging.info(f'Current Tag: {tag}')
         model_metadata = model_service.get_active_model(tag=tag)
+        logging.info(f'Model Validation Exists process')
         if not model_metadata:
+            logging.info(f'Model Validation Exists')
             raise Exception("No active model found in the database.")
 
+        logging.info(f'Checking process step')
         model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path,
                                                        model_metadata.engine)
         print(f"Loading model from {model_path}")

@@ -1,6 +1,6 @@
 # repositories.py
 from bson import ObjectId
-
+import logging
 from models.models import ModelSchema
 
 
@@ -9,8 +9,10 @@ class ModelRepository:
         self.collection = db['models']
 
     def get_active_model(self, tag: str):
+        logging.info(f'Check Model: {tag}')
         result = self.collection.find_one({"enabled": True, "tag": tag})
         if result:
+            logging.info(f'result: {str(result)}')
             return ModelSchema(**result)
         return None
 
