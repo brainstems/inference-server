@@ -2,13 +2,14 @@ import os
 
 from aiohttp import web
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
 from models.models import ModelSchemaBase
 from repositories.repositories import ModelRepository
 from services.services import ModelService
 
 # MongoDB connection
-client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017"))
+client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017"), server_api=ServerApi('1'))
 db = client['inference_server']
 model_repository = ModelRepository(db)
 model_service = ModelService(model_repository)
