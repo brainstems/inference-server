@@ -94,10 +94,11 @@ class ModelService:
         """
 
         logging.info(f'Checking engine')
-
+        current_path = os.getcwd().replace("src", "model")
         if engine == "transformer":
             logging.info(f'Transformer engine selected')
-            local_model_path = f"../../model/{model_name}"
+
+            local_model_path = f"{current_path}/{model_name}"
             if not os.path.exists(local_model_path):
                 print(f"Downloading model from {model_s3_path}")
                 self.download_folder_from_s3(model_s3_path, local_model_path)
@@ -105,7 +106,7 @@ class ModelService:
             return local_model_path
         else:
             logging.info(f'Llama engine selected')
-            local_model_path = f"../../model/{model_name}.gguf"
+            local_model_path = f"{current_path}/{model_name}.gguf"
             if not os.path.exists(local_model_path):
                 print(f"Downloading model from {model_s3_path}")
                 self.download_model_from_s3(model_s3_path, local_model_path)
