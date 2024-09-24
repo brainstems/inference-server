@@ -2,3 +2,4 @@ websockets
 torch
 transformers
 aiohttp
+load_dotenv
