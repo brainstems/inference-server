@@ -8,8 +8,10 @@ from dotenv import load_dotenv
 
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
 from services.engine_models import EngineService
+import sys
 
 load_dotenv()
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 async def handler(websocket, path):

@@ -7,6 +7,9 @@ from models.models import ModelSchema
 from repositories.repositories import ModelRepository
 
 import logging
+import sys
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
 class ModelService:
     def __init__(self, model_repository: ModelRepository):
         self.model_repository = model_repository
