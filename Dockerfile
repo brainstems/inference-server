@@ -53,4 +53,4 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 ENV MONGO_URI=${MONGO_URI}
 
 # Set the entry point for the container.
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["python3", "/app/repo/src/server.py"]
