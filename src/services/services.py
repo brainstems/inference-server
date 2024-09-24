@@ -60,6 +60,10 @@ class ModelService:
 
         bucket, prefix = s3_path.replace("s3://", "").split("/", 1)
 
+        logging.info(f"Downloading folder {s3_path}")
+        logging.info(f"Downloading bucket {bucket}")
+        logging.info(f"Downloading prefix {prefix}")
+
         # Ensure the local path exists
         if not os.path.exists(local_path):
             os.makedirs(local_path)
