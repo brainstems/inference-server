@@ -52,5 +52,8 @@ ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 ENV MONGO_URI=${MONGO_URI}
 
+# Add the src folder to the PYTHONPATH
+ENV PYTHONPATH="/app/repo/src:${PYTHONPATH}"
+
 # Set the entry point for the container.
 ENTRYPOINT ["python3", "/app/repo/src/server.py"]
