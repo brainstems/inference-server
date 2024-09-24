@@ -2,7 +2,7 @@
 import pytest
 from aiohttp import web
 
-from src.app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler
+from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler
 
 
 @pytest.fixture

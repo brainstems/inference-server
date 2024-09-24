@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 from model_mock import ModelMock
-from src.model_operations import generate_tokens, load_model
+from model_operations import generate_tokens, load_model
 
 model = ModelMock()
 prompt = """

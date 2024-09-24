@@ -3,9 +3,9 @@ import os
 from aiohttp import web
 from pymongo import MongoClient
 
-from src.models.models import ModelSchemaBase
-from src.repositories.repositories import ModelRepository
-from src.services.services import ModelService
+from models.models import ModelSchemaBase
+from repositories.repositories import ModelRepository
+from services.services import ModelService
 
 # MongoDB connection
 client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017"))

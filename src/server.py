@@ -6,7 +6,7 @@ from aiohttp import web
 from dotenv import load_dotenv
 
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
-from src.services.engine_models import EngineService
+from services.engine_models import EngineService
 
 load_dotenv()
 

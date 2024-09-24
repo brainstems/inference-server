@@ -2,7 +2,7 @@ import os
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from src.model_operations import generate_tokens, load_model
+from model_operations import generate_tokens, load_model
 
 
 class BaseEngine:

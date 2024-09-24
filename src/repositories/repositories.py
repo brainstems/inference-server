@@ -1,7 +1,7 @@
 # repositories.py
 from bson import ObjectId
 
-from src.models.models import ModelSchema
+from models.models import ModelSchema
 
 
 class ModelRepository:

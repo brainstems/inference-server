@@ -3,8 +3,8 @@ import os
 
 import boto3
 
-from src.models.models import ModelSchema
-from src.repositories.repositories import ModelRepository
+from models.models import ModelSchema
+from repositories.repositories import ModelRepository
 
 
 class ModelService:
