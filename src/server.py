@@ -1,14 +1,15 @@
 import asyncio
 import json
 import logging
+import sys
 
 import websockets
 from aiohttp import web
 from dotenv import load_dotenv
 
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
+from models.models import ModelSchema
 from services.engine_models import EngineService
-import sys
 
 load_dotenv()
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -22,12 +23,22 @@ async def handler(websocket, path):
         prompt = await websocket.recv()
         tag = json.loads(prompt)['tag']
         logging.info(f'Current Tag: {tag}')
-        model_metadata = model_service.get_active_model(tag=tag)
-        logging.info(f'Model Validation Exists process')
-        if not model_metadata:
-            logging.info(f'Model Validation Exists')
-            raise Exception("No active model found in the database.")
+        # model_metadata = model_service.get_active_model(tag=tag)
+        # logging.info(f'Model Validation Exists process')
+        # if not model_metadata:
+        #     logging.info(f'Model Validation Exists')
+        #     raise Exception("No active model found in the database.")
 
+        model_metadata = ModelSchema(
+            **{
+                "enabled": True,
+                "engine": "transformer",
+                "last_updated": "2024-09-09T00:00:00Z",
+                "model_name": "models--ai21labs--AI21-Jamba-1.5-Mini/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858",
+                "s3_path": "https://is-models.s3.amazonaws.com/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858/",
+                "tag": "jamba"
+            }
+        )
         logging.info(f'Checking process step')
         model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path,
                                                        model_metadata.engine)
