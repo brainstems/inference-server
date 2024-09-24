@@ -35,7 +35,7 @@ async def handler(websocket, path):
                 "engine": "transformer",
                 "last_updated": "2024-09-09T00:00:00Z",
                 "model_name": "models--ai21labs--AI21-Jamba-1.5-Mini/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858",
-                "s3_path": "https://is-models.s3.amazonaws.com/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858/",
+                "s3_path": "s3://is-models.s3.amazonaws.com/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858/",
                 "tag": "jamba"
             }
         )
