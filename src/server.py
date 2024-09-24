@@ -29,18 +29,18 @@ async def handler(websocket, path):
         logging.info(f'Checking process step')
         model_path = model_service.ensure_model_exists(model_metadata.model_name, model_metadata.s3_path,
                                                        model_metadata.engine)
-        print(f"Loading model from {model_path}")
+        logging.info(f"Loading model from {model_path}")
 
         service = EngineService(model_metadata.engine, model_metadata)
         response = service.process(prompt)
         websocket.send(response)
 
     except websockets.ConnectionClosedError:
-        print("Connection closed unexpectedly. Cleaning up...")
+        logging.info("Connection closed unexpectedly. Cleaning up...")
     except websockets.ConnectionClosedOK:
-        print("Connection closed normally.")
+        logging.info("Connection closed normally.")
     except Exception as e:
-        print(f"Connection error: {e}")
+        logging.info(f"Connection error: {e}")
 
 
 async def handle_health_check(request):
