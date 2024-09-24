@@ -67,7 +67,7 @@ async def start_websocket_server():
     """
     Starts the WebSocket server on port 8000.
     """
-    logging.info(f"Cuda device enabled {cuda_is_available}")
+    logging.info(f"Cuda device enabled {cuda_is_available()}")
     try:
         async with websockets.serve(handler, "0.0.0.0", 8000):
             print("WebSocket server running on ws://0.0.0.0:8000")
