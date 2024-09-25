@@ -4,3 +4,4 @@ transformers
 aiohttp
 load_dotenv
 pydantic
+accelerate
