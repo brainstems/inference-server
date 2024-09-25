@@ -34,8 +34,10 @@ async def handler(websocket, path):
                 "enabled": True,
                 "engine": "transformer",
                 "last_updated": "2024-09-09T00:00:00Z",
-                "model_name": "models--ai21labs--AI21-Jamba-1.5-Mini/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858",
-                "s3_path": "s3://is-models/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858/",
+                # "model_name": "models--ai21labs--AI21-Jamba-1.5-Mini/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858",
+                "model_name": "models--ai21labs--AI21-Jamba-1.5-Mini/snapshots/83cec42f3448800e888c69f892e65ec8c73de225",
+                # "s3_path": "s3://is-models/snapshots/1840d3373c51e4937f4dbaaaaf8cac1427b46858/",
+                "s3_path": "s3://is-models/snapshots/83cec42f3448800e888c69f892e65ec8c73de225/",
                 "tag": "jamba"
             }
         )
