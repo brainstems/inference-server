@@ -18,7 +18,7 @@ class EngineTransformer(BaseEngine):
         super().__init__(model_metadata)
         self.current_path = os.getcwd()
 
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
@@ -33,13 +33,14 @@ class EngineTransformer(BaseEngine):
             use_mamba_kernels=False
         )
 
-        self.model.to(self.device)
+        self.model = self.model.to(self.device)
 
     def process(self, prompt):
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
-        outputs = self.model.generate(inputs['input_ids'], max_new_tokens=100)
+        outputs = self.model.generate(inputs['input_ids'].to(self.device), max_new_tokens=100)
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response
+
 
 class EngineLlama(BaseEngine):
     def __init__(self, model_metadata):
@@ -70,6 +71,7 @@ class EngineService:
             return self.engine.process(prompt, websocket)
         else:
             return self.engine.process(prompt)
+
 
 if __name__ == "__main__":
     model_metadata = {
