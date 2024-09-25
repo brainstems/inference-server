@@ -16,6 +16,8 @@ RUN pip install --upgrade pip
 
 # Install llama-cpp-python with CUDA support
 RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
+RUN CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc" pip install mamba-ssm causal-conv1d>=1.2.0
+
 
 # Install additional Python dependencies
 COPY requirements.txt /app/repo/

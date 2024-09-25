@@ -5,5 +5,5 @@ aiohttp
 load_dotenv
 pydantic
 accelerate
-mamba-ssm
-causal-conv1d>=1.2.0
+# mamba-ssm
+# causal-conv1d>=1.2.0
