@@ -22,7 +22,8 @@ class EngineTransformer(BaseEngine):
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
-            use_mamba_kernels=False,
+            legacy=False,
+            use_mamba_kernels=False
         )
 
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -39,7 +40,6 @@ class EngineTransformer(BaseEngine):
         outputs = self.model.generate(inputs['input_ids'], max_new_tokens=100)
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         return response
-
 
 class EngineLlama(BaseEngine):
     def __init__(self, model_metadata):
