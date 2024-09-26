@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 import torch
 import torch.multiprocessing as mp
@@ -6,6 +8,7 @@ from model_operations import generate_tokens, load_model
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 mp.set_start_method('spawn', force=True)
 
 
@@ -21,18 +24,20 @@ class EngineTransformer(BaseEngine):
     def __init__(self, model_metadata):
         super().__init__(model_metadata)
         self.current_path = os.getcwd()
-
+        logging.info(f"Current path: {self.current_path}")
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
+        logging.info(f"Device: {self.device}")
         self.llm = LLM(
             model=f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
             tensor_parallel_size=2,
             max_model_len=1024
         )
+        logging.info(f"LLM: complete")
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}'
         )
+        logging.info(f"Tokenizer: complete")
 
     def process(self, prompt):
         messages = [
@@ -40,11 +45,15 @@ class EngineTransformer(BaseEngine):
             {"role": "user", "content": prompt},
         ]
 
+        logging.info(f"Message: complete")
         prompts = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+        logging.info(f"Prompts: complete")
 
         sampling_params = SamplingParams(temperature=0.7, top_p=0.9, max_tokens=100)
+        logging.info(f"Sampling: complete")
 
         outputs = self.llm.generate(prompts, sampling_params)
+        logging.info(f"Output: complete")
 
         return outputs[0].outputs[0].text
 
