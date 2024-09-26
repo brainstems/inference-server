@@ -27,11 +27,11 @@ class EngineTransformer(BaseEngine):
         logging.info(f"Current path: {self.current_path}")
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Device: {self.device}")
-        local_path = f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}'
+        local_path = f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}/'
         logging.info(f"Local Model Path: {local_path}")
 
         self.llm = LLM(
-            model=f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
+            model=f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}/',
             tensor_parallel_size=2,
             max_model_len=1024
         )
