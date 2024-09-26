@@ -2,8 +2,8 @@ import os
 
 import torch
 from model_operations import generate_tokens, load_model
-from transformers import AutoTokenizer, AutoModelForCausalLM
-
+from transformers import AutoTokenizer
+from vllm import LLM, SamplingParams
 
 class BaseEngine:
     def __init__(self, model_metadata):
@@ -13,33 +13,33 @@ class BaseEngine:
         raise NotImplementedError("El método 'process' debe ser implementado en las subclases")
 
 
-class EngineTransformer(BaseEngine):
+class EngineTransformer:
     def __init__(self, model_metadata):
-        super().__init__(model_metadata)
-        self.current_path = os.getcwd()
+        self.model_name = model_metadata.model_name
+        self.device_count = torch.cuda.device_count() if torch.cuda.is_available() else 1
 
-        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        # Establece el número de GPUs a utilizar (mínimo 2 si tienes Jamba Mini)
+        self.llm = LLM(model=self.model_name,
+                       max_model_len=200 * 1024,
+                       tensor_parallel_size=self.device_count)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
-            legacy=False,
-            use_mamba_kernels=False
-        )
-
-        self.model = AutoModelForCausalLM.from_pretrained(
-            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}',
-            torch_dtype=torch.bfloat16,
-            device_map="auto",
-            use_mamba_kernels=False
-        )
-
-        self.model = self.model.to(self.device)
+        # Cargar el tokenizador del modelo Jamba
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
 
     def process(self, prompt):
-        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
-        outputs = self.model.generate(inputs['input_ids'].to(self.device), max_new_tokens=100)
-        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        return response
+        messages = [
+            {"role": "system", "content": "You are an oracle who speaks in cryptic but wise phrases."},
+            {"role": "user", "content": prompt}
+        ]
+
+        prompts = self.tokenizer.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
+
+        sampling_params = SamplingParams(temperature=0.7, top_p=0.95, max_tokens=100)
+
+        outputs = self.llm.generate(prompts, sampling_params)
+        generated_text = outputs[0].outputs[0].text
+
+        return generated_text
 
 
 class EngineLlama(BaseEngine):
