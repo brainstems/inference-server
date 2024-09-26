@@ -27,18 +27,18 @@ class EngineTransformer(BaseEngine):
         logging.info(f"Current path: {self.current_path}")
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Device: {self.device}")
-        local_path = f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}/'
+        local_path = f'/app/models--ai21labs--AI21-Jamba-1.5-Mini/'
         logging.info(f"Local Model Path: {local_path}")
 
         self.llm = LLM(
-            model=f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}/',
+            model=f'{local_path}',
             tensor_parallel_size=2,
             max_model_len=1024
         )
         logging.info(f"LLM: complete")
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            f'{self.current_path.replace("src", "model")}/{model_metadata.model_name}'
+            f'{local_path}'
         )
         logging.info(f"Tokenizer: complete")
 
