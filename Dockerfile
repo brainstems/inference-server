@@ -1,33 +1,37 @@
-# The NVIDIA CUDA base image. CUDA 12.5.0 images fail on Akash.
+# The NVIDIA CUDA base image with CUDNN support for Ubuntu 22.04 and CUDA 12.4.1
 FROM --platform=linux/amd64 nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install necessary packages
+# Install necessary system packages
 RUN apt-get update && apt-get install -y \
     git \
     wget \
     python3-pip \
+    cmake \
     nvidia-cuda-toolkit
 
-# Install Python dependencies
+# Upgrade pip to the latest version
 RUN pip install --upgrade pip
 
 # Install llama-cpp-python with CUDA support
 RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
-RUN #CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-RUN #CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install mamba-ssm causal-conv1d>=1.2.0
 
+# Install PyTorch with CUDA 12.1 support (cu121)
+RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Install additional Python dependencies
+# Install mamba-ssm and causal-conv1d
+RUN pip3 install mamba-ssm causal-conv1d>=1.2.0 --root-user-action=ignore
+
+# Copy the Python dependencies file and install the requirements
 COPY requirements.txt /app/repo/
-RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt
+RUN pip3 install --default-timeout=100 -r /app/repo/requirements.txt --root-user-action=ignore
 
-# Add MongoDB and AWS credentials packages
-RUN pip3 install boto3 pymongo
+# Install boto3 and pymongo for MongoDB and AWS credentials management
+RUN pip3 install boto3 pymongo --root-user-action=ignore
 
-# Copy the entrypoint script into the container.
+# Copy the entrypoint script and give it execution permissions
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
@@ -38,8 +42,7 @@ COPY model /app/repo/model
 # Expose the WebSocket and HTTP ports
 EXPOSE 8000 8080
 
-# Env vars for MongoDB and AWS credentials.
-# You can set these dynamically during `docker run`.
+# Environment variables for MongoDB and AWS credentials
 ARG REPO_URL
 ARG REPO_BRANCH
 ARG AWS_ACCESS_KEY_ID
@@ -58,5 +61,5 @@ ENV MONGO_URI=${MONGO_URI}
 # Add the src folder to the PYTHONPATH
 ENV PYTHONPATH="/app/repo/src:${PYTHONPATH}"
 
-# Set the entry point for the container.
+# Set the entry point for the container to run the server
 ENTRYPOINT ["python3", "/app/repo/src/server.py"]
