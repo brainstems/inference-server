@@ -36,16 +36,19 @@ class EngineTransformer(BaseEngine):
             max_model_len=1024
         )
         logging.info(f"LLM: complete")
+        model_name = "ai21labs/AI21-Jamba-1.5-Mini"
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            f'{local_path}'
+            # f'{local_path}'
+            model_name
         )
         logging.info(f"Tokenizer: complete")
 
     def process(self, prompt):
         messages = [
             {"role": "system", "content": "You are an ancient oracle who speaks in cryptic but wise phrases."},
-            {"role": "user", "content": prompt},
+            # {"role": "user", "content": prompt},
+            {"role": "user", "content": "Hello, what is your wisdom?"},
         ]
 
         logging.info(f"Message: complete")
