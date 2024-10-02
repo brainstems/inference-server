@@ -27,28 +27,23 @@ class EngineTransformer(BaseEngine):
         logging.info(f"Current path: {self.current_path}")
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Device: {self.device}")
-        local_path = f'/app/models--ai21labs--AI21-Jamba-1.5-Mini/'
-        logging.info(f"Local Model Path: {local_path}")
-        model_name = "ai21labs/AI21-Jamba-1.5-Mini"
+
+        model_name = "ai21labs/Jamba-tiny-dev"
+        logging.info(f"Model name: {model_name}")
 
         self.llm = LLM(
-            # model=f'{local_path}',
             model=model_name,
             tensor_parallel_size=2,
             max_model_len=1024
         )
         logging.info(f"LLM: complete")
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            # f'{local_path}'
-            model_name
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         logging.info(f"Tokenizer: complete")
 
     def process(self, prompt):
         messages = [
             {"role": "system", "content": "You are an ancient oracle who speaks in cryptic but wise phrases."},
-            # {"role": "user", "content": prompt},
             {"role": "user", "content": "Hello, what is your wisdom?"},
         ]
 
