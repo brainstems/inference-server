@@ -28,6 +28,7 @@ ENV LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
 # Upgrade pip to the latest version
 RUN pip install --upgrade pip
 
+RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
 # Install Hugging Face Transformers library
 RUN pip install transformers
 
