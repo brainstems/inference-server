@@ -12,20 +12,30 @@ RUN apt-get update && apt-get install -y \
     cmake \
     nvidia-cuda-toolkit
 
+# Download and configure the CUDA repository for Ubuntu 20.04 (required for CUDA 12.4)
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin \
+    && mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600 \
+    && wget https://developer.download.nvidia.com/compute/cuda/12.4.0/local_installers/cuda-repo-ubuntu2004-12-4-local_12.4.0-550.54.14-1_amd64.deb \
+    && dpkg -i cuda-repo-ubuntu2004-12-4-local_12.4.0-550.54.14-1_amd64.deb \
+    && cp /var/cuda-repo-ubuntu2004-12-4-local/cuda-*-keyring.gpg /usr/share/keyrings/ \
+    && apt-get update && apt-get install -y cuda-toolkit-12-4
+
+# Set CUDA environment variables explicitly
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=$CUDA_HOME/bin:$PATH
+ENV LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+
 # Upgrade pip to the latest version
 RUN pip install --upgrade pip
 
 # Install Hugging Face Transformers library
 RUN pip install transformers
 
-# Install llama-cpp-python with CUDA support
-RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install llama-cpp-python
-
 # Install PyTorch with CUDA 12.1 support (cu121)
-RUN CMAKE_ARGS="-DGGML_CUDA=on" FORCE_CMAKE=1 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Install mamba-ssm and causal-conv1d
-RUN pip3 install mamba-ssm causal-conv1d>=1.2.0 --root-user-action=ignore
+# Install mamba-ssm and causal-conv1d with CUDA support
+RUN pip3 install mamba-ssm 'causal-conv1d>=1.2.0' --root-user-action=ignore
 
 # Set the Hugging Face Token as an ARG and add it directly to the Hugging Face config
 ARG HF_TOKEN
