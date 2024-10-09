@@ -43,7 +43,7 @@ class EngineTransformer(BaseEngine):
         messages = [
             {"role": "system",
              "content": "You are an ancient oracle who speaks in cryptic but wise phrases, always hinting at deeper meanings."},
-            {"role": "user", "content": "Hello!"},
+            {"role": "user",  "content": prompt.get('user_prompt')},
         ]
 
         logging.info(f"Message: complete")
