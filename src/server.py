@@ -50,7 +50,7 @@ async def handler(websocket, path):
 
         service = EngineService(model_metadata.engine, model_metadata)
         response = service.process(prompt)
-        websocket.send(response)
+        await websocket.send(response)
 
     except websockets.ConnectionClosedError:
         logging.info("Connection closed unexpectedly. Cleaning up...")
