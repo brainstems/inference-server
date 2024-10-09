@@ -23,8 +23,8 @@ async def handler(websocket, path):
     """
     try:
         prompt = await websocket.recv()
-        tag = json.loads(prompt)['tag']
-        logging.info(f'Current Tag: {tag}')
+        # tag = json.loads(prompt)['tag']
+        # logging.info(f'Current Tag: {tag}')
         # model_metadata = model_service.get_active_model(tag=tag)
         # logging.info(f'Model Validation Exists process')
         # if not model_metadata:
