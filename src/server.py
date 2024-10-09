@@ -49,7 +49,7 @@ async def handler(websocket, path):
         logging.info(f"Loading model from {model_path}")
 
         service = EngineService(model_metadata.engine, model_metadata)
-        response = service.process(prompt)
+        response = service.process(json.loads(prompt))
         await websocket.send(response)
 
     except websockets.ConnectionClosedError:
