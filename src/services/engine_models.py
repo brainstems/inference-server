@@ -26,7 +26,8 @@ class EngineTransformer(BaseEngine):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         logging.info(f"Device: {self.device}")
 
-        model_name = "ai21labs/Jamba-tiny-dev"
+        # model_name = "ai21labs/Jamba-tiny-dev"
+        model_name = "ai21labs/AI21-Jamba-1.5-Mini"
         logging.info(f"Model name: {model_name}")
 
         self.llm = LLM(
