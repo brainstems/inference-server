@@ -3,13 +3,11 @@ import os
 import sys
 
 import torch
-import torch.multiprocessing as mp
 from model_operations import generate_tokens, load_model
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-mp.set_start_method('spawn', force=True)
 
 
 class BaseEngine:
@@ -33,7 +31,7 @@ class EngineTransformer(BaseEngine):
 
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=2,
+            tensor_parallel_size=1,
             max_model_len=1024
         )
         logging.info(f"LLM: complete")

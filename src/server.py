@@ -3,6 +3,7 @@ import json
 import logging
 import sys
 
+import torch.multiprocessing as mp
 import websockets
 from aiohttp import web
 from dotenv import load_dotenv
@@ -10,6 +11,7 @@ from dotenv import load_dotenv
 from app import add_model_handler, activate_model_handler, delete_model_handler, list_models_handler, model_service
 from models.models import ModelSchema
 from services.engine_models import EngineService
+
 # from cuda_utils import cuda_is_available
 load_dotenv()
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -111,4 +113,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    mp.set_start_method('spawn', force=True)
     asyncio.run(main())
