@@ -41,8 +41,9 @@ class EngineTransformer(BaseEngine):
 
     def process(self, prompt):
         messages = [
-            {"role": "system", "content": "You are an ancient oracle who speaks in cryptic but wise phrases."},
-            {"role": "user", "content": "Hello, what is your wisdom?"},
+            {"role": "system",
+             "content": "You are an ancient oracle who speaks in cryptic but wise phrases, always hinting at deeper meanings."},
+            {"role": "user", "content": "Hello!"},
         ]
 
         logging.info(f"Message: complete")
