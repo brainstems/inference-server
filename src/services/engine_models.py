@@ -32,7 +32,7 @@ class EngineTransformer(BaseEngine):
 
         self.llm = LLM(
             model=model_name,
-            tensor_parallel_size=3,
+            tensor_parallel_size=2,
             max_model_len=1024
         )
         logging.info(f"LLM: complete")
