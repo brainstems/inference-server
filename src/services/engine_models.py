@@ -8,6 +8,9 @@ from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+import torch.multiprocessing as mp
+
+mp.set_start_method('spawn', force=True)
 
 
 class BaseEngine:

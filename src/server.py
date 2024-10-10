@@ -3,7 +3,7 @@ import json
 import logging
 import sys
 
-import torch.multiprocessing as mp
+
 import websockets
 from aiohttp import web
 from dotenv import load_dotenv
@@ -113,5 +113,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    mp.set_start_method('spawn', force=True)
     asyncio.run(main())
