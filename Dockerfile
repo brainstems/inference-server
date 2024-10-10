@@ -24,6 +24,7 @@ RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86
 ENV CUDA_HOME=/usr/local/cuda
 ENV PATH=$CUDA_HOME/bin:$PATH
 ENV LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+ENV PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 # Upgrade pip to the latest version
 RUN pip install --upgrade pip
